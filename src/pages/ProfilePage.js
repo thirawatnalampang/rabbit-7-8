@@ -35,7 +35,7 @@ export default function ProfilePage() {
           phone: data.phone || '',
           address: data.address || '',
           gender: data.gender || '',
-          profileImage: data.profile_image || 'https://via.placeholder.com/100',
+          profileImage: data.profile_image || null,
         });
       } catch (err) {
         console.error(err);
@@ -45,7 +45,6 @@ export default function ProfilePage() {
     fetchUser();
   }, [user, navigate, login]);
 
-  // ✅ แก้ปัญหา gender ไม่ sync หลังโหลด user เสร็จ
   useEffect(() => {
     if (user?.gender !== undefined) {
       setGender(user.gender || '');
@@ -101,8 +100,6 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      console.log('Saving with gender:', gender); // ✅ debug gender
-
       let profileImageUrl = user.profileImage;
 
       if (selectedImage) {
@@ -139,7 +136,7 @@ export default function ProfilePage() {
         phone: data.phone || '',
         address: data.address || '',
         gender: data.gender || '',
-        profileImage: data.profile_image || 'https://via.placeholder.com/100',
+        profileImage: data.profile_image || null,
       });
 
       alert('✅ บันทึกข้อมูลสำเร็จ');
@@ -152,30 +149,75 @@ export default function ProfilePage() {
   return (
     <div className="flex h-screen bg-black text-white">
       <div className="w-20 md:w-48 bg-black flex flex-col items-center py-6 space-y-10">
-        <img
+        {/* เอารูปโปรไฟล์ออกเลย */}
+        {/* <img
           src={previewUrl || user.profileImage || 'https://via.placeholder.com/100'}
           alt="profile"
           className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover"
-        />
+        /> */}
         <div className="text-sm md:text-base font-semibold">Profile</div>
       </div>
 
-      <div className="flex-1 bg-white text-black rounded-tl-3xl p-8">
+      <div className="flex-1 bg-white text-black rounded-tl-3xl p-8 overflow-auto">
         <h2 className="text-xl font-bold mb-4">EDIT YOUR PROFILE</h2>
 
         <div className="flex flex-col items-center mb-6">
-          <img
-            src={previewUrl || user.profileImage || 'https://via.placeholder.com/100'}
-            alt="profile"
-            className="w-24 h-24 rounded-full object-cover mb-2"
-          />
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleImageChange}
-            className="text-sm text-gray-700"
-          />
+          <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white flex items-center justify-center bg-gray-200">
+            {/* แสดงรูปถ้ามี */}
+            {(previewUrl || user.profileImage) ? (
+              <img
+                src={previewUrl || user.profileImage}
+                alt="profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              // ถ้าไม่มีรูป แสดงไอคอนคนแทน
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-12 h-12 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM6 20c0-2.21 3.58-4 6-4s6 1.79 6 4v1H6v-1z"
+                />
+              </svg>
+            )}
+
+            <button
+              onClick={() => fileInputRef.current.click()}
+              className="absolute bottom-1 right-1 w-6 h-6 bg-white border-2 border-white rounded-full shadow flex items-center justify-center hover:bg-gray-100 transition"
+              title="เปลี่ยนรูปโปรไฟล์"
+              style={{ boxShadow: '0 0 4px rgba(0,0,0,0.15)' }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3 w-3 text-black"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.232 5.232l3.536 3.536M9 11l6.536-6.536a2 2 0 112.828 2.828L11.828 13.828a2 2 0 01-1.414.586H9v-1.414a2 2 0 01.586-1.414z"
+                />
+              </svg>
+            </button>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </div>
         </div>
 
         <div className="space-y-4 max-w-md mx-auto">

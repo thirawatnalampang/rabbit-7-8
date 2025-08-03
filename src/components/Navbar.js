@@ -4,7 +4,7 @@ import {
   FaHome,
   FaPaw,
   FaShoppingCart,
-  FaUserCircle,
+  FaUserAlt,
   FaPlus,
   FaSearch,
   FaArrowLeft,
@@ -25,6 +25,9 @@ export default function Navbar() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') handleSearch();
   };
+
+  const hasValidProfileImage =
+    user?.profileImage && user.profileImage.trim() !== '' && !user.profileImage.includes('placeholder');
 
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center shadow-md">
@@ -69,28 +72,21 @@ export default function Navbar() {
         >
           <FaPlus size={20} />
         </Link>
+
         {user ? (
-          <Link
-            to="/profile"
-            title="โปรไฟล์"
-            className="hover:text-teal-300 transition-colors duration-300"
-          >
-            {user.profileImage ? (
+          <Link to="/profile" title="โปรไฟล์" className="hover:text-teal-300 transition-colors duration-300">
+            {hasValidProfileImage ? (
               <img
                 src={user.profileImage}
                 alt="Profile"
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
-              <FaUserCircle size={26} />
+              <FaUserAlt size={28} className="w-8 h-8 p-1 rounded-full bg-white text-black" />
             )}
           </Link>
         ) : (
-          <Link
-            to="/login"
-            title="เข้าสู่ระบบ"
-            className="hover:text-teal-300 transition-colors duration-300"
-          >
+          <Link to="/login" title="เข้าสู่ระบบ" className="hover:text-teal-300 transition-colors duration-300">
             เข้าสู่ระบบ
           </Link>
         )}

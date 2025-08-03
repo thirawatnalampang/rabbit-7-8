@@ -16,23 +16,23 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-const login = (userData) => {
-  const fullUserData = {
-    user_id: userData.user_id,
-    username: userData.username,
-    email: userData.email || '',
-    phone: userData.phone || '',
-    address: userData.address || '',
-    gender: userData.gender || '',   // <-- เพิ่มตรงนี้
-    profileImage: userData.profileImage || userData.profile_image || 'https://via.placeholder.com/100',
+  const login = (userData) => {
+    const fullUserData = {
+      user_id: userData.user_id,
+      username: userData.username,
+      email: userData.email || '',
+      phone: userData.phone || '',
+      address: userData.address || '',
+      gender: userData.gender || '',
+      profileImage: userData.profileImage || userData.profile_image || '',  // ✅ เปลี่ยนเป็น '' ไม่ใช้ url
+    };
+    setUser(fullUserData);
   };
-  setUser(fullUserData);
-};
 
   const logout = () => setUser(null);
 
   const loginWithGoogle = async () => {
-    // ตัวอย่างล็อกอิน google mock
+    // mock google login
     const googleUser = {
       user_id: 9999,
       username: 'google_user',
@@ -40,7 +40,7 @@ const login = (userData) => {
       phone: '',
       address: '',
       gender: '',
-      profileImage: 'https://via.placeholder.com/100',
+      profileImage: '',  // ✅ เปลี่ยนเป็น '' ไม่ใช้ url
     };
     setUser(googleUser);
   };
