@@ -99,53 +99,60 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    try {
-      let profileImageUrl = user.profileImage;
+  try {
+    const phoneValue = phoneRef.current.value.trim();
 
-      if (selectedImage) {
-        const formData = new FormData();
-        formData.append('profileImage', selectedImage);
-        const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('❌ อัปโหลดรูปไม่สำเร็จ');
-        const uploadData = await uploadRes.json();
-        profileImageUrl = uploadData.url + '?t=' + new Date().getTime();
-      }
-
-      const updatedUser = {
-        username: usernameRef.current.value,
-        email: emailRef.current.value,
-        phone: phoneRef.current.value,
-        address: addressRef.current.value,
-        gender: gender,
-        profileImage: profileImageUrl,
-      };
-
-      const res = await fetch(`/api/users/${user.user_id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedUser),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || '❌ บันทึกข้อมูลไม่สำเร็จ');
-
-      login({
-        user_id: data.user_id,
-        username: data.username,
-        email: data.email || '',
-        phone: data.phone || '',
-        address: data.address || '',
-        gender: data.gender || '',
-        profileImage: data.profile_image || null,
-      });
-
-      alert('✅ บันทึกข้อมูลสำเร็จ');
-      setSelectedImage(null);
-    } catch (err) {
-      alert(err.message);
+    // ✅ เช็คเฉพาะเมื่อมีการกรอก
+    if (phoneValue !== '' && phoneValue.length !== 10) {
+      alert('กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 ตัว');
+      return; // ❌ ยกเลิกการบันทึก
     }
-  };
 
+    let profileImageUrl = user.profileImage;
+
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append('profileImage', selectedImage);
+      const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!uploadRes.ok) throw new Error('❌ อัปโหลดรูปไม่สำเร็จ');
+      const uploadData = await uploadRes.json();
+      profileImageUrl = uploadData.url + '?t=' + new Date().getTime();
+    }
+
+    const updatedUser = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      phone: phoneValue,
+      address: addressRef.current.value,
+      gender: gender,
+      profileImage: profileImageUrl,
+    };
+
+    const res = await fetch(`/api/users/${user.user_id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedUser),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || '❌ บันทึกข้อมูลไม่สำเร็จ');
+
+    login({
+      user_id: data.user_id,
+      username: data.username,
+      email: data.email || '',
+      phone: data.phone || '',
+      address: data.address || '',
+      gender: data.gender || '',
+      profileImage: data.profile_image || null,
+    });
+
+    alert('✅ บันทึกข้อมูลสำเร็จ');
+    setSelectedImage(null);
+  } catch (err) {
+    alert(err.message);
+  }
+};
   return (
     <div className="flex h-screen bg-black text-white">
       <div className="w-20 md:w-48 bg-black flex flex-col items-center py-6 space-y-10">

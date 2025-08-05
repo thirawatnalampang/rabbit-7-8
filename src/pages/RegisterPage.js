@@ -51,7 +51,7 @@ export default function RegisterPage() {
       localStorage.setItem('user', JSON.stringify({ username, email }));
 
       alert('สมัครสมาชิกสำเร็จ!');
-      navigate('/profile'); // ไปหน้าโปรไฟล์หลังสมัคร
+      navigate('/login'); // ไปหน้าโปรไฟล์หลังสมัคร
     } catch (err) {
       alert(err.message);
     }

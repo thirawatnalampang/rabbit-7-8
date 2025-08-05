@@ -1,3 +1,4 @@
+// components/Navbar.jsx
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -22,13 +23,6 @@ export default function Navbar() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleSearch();
-  };
-
-  const hasValidProfileImage =
-    user?.profileImage && user.profileImage.trim() !== '' && !user.profileImage.includes('placeholder');
-
   return (
     <nav className="bg-black text-white p-4 flex justify-between items-center shadow-md">
       <button
@@ -48,7 +42,7 @@ export default function Navbar() {
           className="focus:outline-none text-black bg-transparent w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         />
         <button onClick={handleSearch}>
           <FaSearch className="text-black ml-2" />
@@ -75,9 +69,9 @@ export default function Navbar() {
 
         {user ? (
           <Link to="/profile" title="โปรไฟล์" className="hover:text-teal-300 transition-colors duration-300">
-            {hasValidProfileImage ? (
+            {user.profileImage && user.profileImage.trim() !== '' ? (
               <img
-                src={user.profileImage}
+                src={`${user.profileImage}?t=${Date.now()}`}
                 alt="Profile"
                 className="w-12 h-12 rounded-full object-cover"
               />
